@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: petstore
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: petstore
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/petstore
+      SPRING_DATASOURCE_USERNAME: petstore
+      SPRING_DATASOURCE_PASSWORD: dev_password
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
