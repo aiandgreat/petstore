@@ -1,8 +1,11 @@
+FROM maven:3.9.4-eclipse-temurin-17 as build
+WORKDIR /workspace
+COPY pom.xml ./
+COPY src ./src
+RUN mvn -B -DskipTests package
+
 FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
-COPY pom.xml mvnw* ./
-COPY .mvn .mvn
-COPY src ./src
-RUN ./mvnw -B -DskipTests package || mvn -B -DskipTests package
+COPY --from=build /workspace/target/*.jar /app/app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/target/backend-0.1.0.jar"]
+ENTRYPOINT ["java","-jar","/app/app.jar"]

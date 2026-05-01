@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/petstore
-    username: petstore
-    password: dev_password
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/petstore}
+    username: ${SPRING_DATASOURCE_USERNAME:petstore}
+    password: ${SPRING_DATASOURCE_PASSWORD:dev_password}
   jpa:
     hibernate:
       ddl-auto: none
@@ -15,3 +15,12 @@ spring:
 
 server:
   port: 8080
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:changeitmustbe32charsminimum}
+
+stripe:
+  secret: ${STRIPE_SECRET:}
+  webhookSecret: ${STRIPE_WEBHOOK_SECRET:}
+

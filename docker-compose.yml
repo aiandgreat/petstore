@@ -11,6 +11,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+
   backend:
     build: ./backend
     environment:
@@ -21,6 +22,8 @@ services:
       - '8080:8080'
     depends_on:
       - db
+    volumes:
+      - ./backend/uploads:/app/uploads
 
   frontend:
     build: ./frontend
@@ -29,5 +32,7 @@ services:
     depends_on:
       - backend
 
+
 volumes:
   pgdata:
+
