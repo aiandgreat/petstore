@@ -5,6 +5,7 @@ import com.petstore.repository.CartItemRepository;
 import com.petstore.repository.OrderRepository;
 import com.petstore.repository.PetRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +26,13 @@ public class CheckoutController {
 
     @PostMapping("/orders")
     @Transactional
-    public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequest req) {
-        List<CartItem> items = cartRepo.findByUserId(req.getUserId());
+    public ResponseEntity<?> createOrder(Authentication auth) {
+        String userId = auth.getName();
+        List<CartItem> items = cartRepo.findByUserId(userId);
         if (items.isEmpty()) return ResponseEntity.badRequest().body("Cart empty");
 
         OrderEntity order = new OrderEntity();
-        order.setUserId(req.getUserId());
+        order.setUserId(userId);
         order.setStatus("PROCESSING");
 
         for (CartItem ci : items) {
@@ -49,14 +51,8 @@ public class CheckoutController {
 
         OrderEntity saved = orderRepo.save(order);
         // clear cart
-        cartRepo.deleteByUserId(req.getUserId());
+        cartRepo.deleteByUserId(userId);
 
         return ResponseEntity.ok(saved);
-    }
-
-    public static class CreateOrderRequest {
-        private String userId;
-        public String getUserId() { return userId; }
-        public void setUserId(String userId) { this.userId = userId; }
     }
 }

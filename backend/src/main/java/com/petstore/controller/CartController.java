@@ -5,6 +5,7 @@ import com.petstore.model.Pet;
 import com.petstore.repository.CartItemRepository;
 import com.petstore.repository.PetRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +22,13 @@ public class CartController {
     }
 
     @GetMapping
-    public List<CartItem> getCart(@RequestParam String userId) {
-        return cartRepo.findByUserId(userId);
+    public List<CartItem> getCart(Authentication auth) {
+        return cartRepo.findByUserId(auth.getName());
     }
 
     @PostMapping
-    public ResponseEntity<?> addToCart(@RequestBody CartItem req) {
+    public ResponseEntity<?> addToCart(@RequestBody CartItem req, Authentication auth) {
+        req.setUserId(auth.getName());
         // validate pet exists and available
         Pet pet = petRepo.findById(req.getPetId()).orElse(null);
         if (pet == null) return ResponseEntity.badRequest().body("Pet not found");
@@ -36,9 +38,9 @@ public class CartController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeFromCart(@PathVariable Long id, @RequestParam String userId) {
+    public ResponseEntity<?> removeFromCart(@PathVariable Long id, Authentication auth) {
         return cartRepo.findById(id).map(ci -> {
-            if (!userId.equals(ci.getUserId())) return ResponseEntity.status(403).body("Not owner");
+            if (!auth.getName().equals(ci.getUserId())) return ResponseEntity.status(403).body("Not owner");
             cartRepo.delete(ci);
             return ResponseEntity.ok().build();
         }).orElse(ResponseEntity.notFound().build());

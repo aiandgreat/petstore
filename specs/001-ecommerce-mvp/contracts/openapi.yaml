@@ -1,0 +1,224 @@
+openapi: 3.0.3
+info:
+  title: Petstore API
+  version: 1.0.0
+  description: OpenAPI contract for the current Petstore backend endpoints.
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/v1/pets:
+    get:
+      summary: List pets
+      tags: [Pets]
+      responses:
+        '200':
+          description: OK
+  /api/v1/pets/{id}:
+    get:
+      summary: Get pet by id
+      tags: [Pets]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not found
+  /api/v1/auth/signup:
+    post:
+      summary: Sign up a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+      responses:
+        '201':
+          description: Created
+  /api/v1/auth/login:
+    post:
+      summary: Log in a user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: OK
+  /api/v1/auth/refresh:
+    post:
+      summary: Refresh a JWT token
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /api/v1/cart:
+    get:
+      summary: Get cart items for a user
+      tags: [Cart]
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Add an item to the cart
+      tags: [Cart]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+      responses:
+        '200':
+          description: OK
+  /api/v1/cart/{id}:
+    delete:
+      summary: Remove an item from the cart
+      tags: [Cart]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /api/v1/checkout/orders:
+    post:
+      summary: Create an order from the current cart
+      tags: [Checkout]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /api/v1/checkout/payment:
+    post:
+      summary: Create a Stripe payment intent
+      tags: [Payments]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+      responses:
+        '200':
+          description: OK
+  /api/v1/checkout/webhook:
+    post:
+      summary: Handle Stripe webhook callbacks
+      tags: [Payments]
+      responses:
+        '200':
+          description: OK
+  /api/v1/admin/pets/{id}/image:
+    post:
+      summary: Upload an image for a pet
+      tags: [Admin Pets]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+  /api/v1/admin/pets/uploads/{filename}:
+    get:
+      summary: Serve a previously uploaded image
+      tags: [Admin Pets]
+      parameters:
+        - in: path
+          name: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    SignupRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    CartItem:
+      type: object
+      properties:
+        userId:
+          type: string
+        petId:
+          type: integer
+          format: int64
+        quantity:
+          type: integer

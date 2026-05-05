@@ -30,8 +30,10 @@ Run backend locally (without Docker)
 ```powershell
 cd backend
 mvn -DskipTests package
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
+
+If you want the backend to use PostgreSQL instead of the embedded local profile, start the database first with Docker Compose and run the backend with the default profile.
 
 Run frontend locally (without Docker)
 

@@ -31,7 +31,7 @@ public class AuthController {
         u.setPasswordHash(passwordEncoder.encode(req.getPassword()));
         u.setRole("CUSTOMER");
         userRepo.save(u);
-        String token = jwtUtil.generateToken(u.getEmail(), 1000L * 60 * 60);
+        String token = jwtUtil.generateToken(u.getEmail(), u.getRole(), 1000L * 60 * 60);
         return ResponseEntity.status(201).body(Map.of("token", token));
     }
 
@@ -40,7 +40,7 @@ public class AuthController {
         var user = userRepo.findByEmail(req.getEmail()).orElse(null);
         if (user == null) return ResponseEntity.status(401).body(Map.of("error","INVALID_CREDENTIALS"));
         if (!passwordEncoder.matches(req.getPassword(), user.getPasswordHash())) return ResponseEntity.status(401).body(Map.of("error","INVALID_CREDENTIALS"));
-        String token = jwtUtil.generateToken(user.getEmail(), 1000L * 60 * 60);
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), 1000L * 60 * 60);
         return ResponseEntity.ok(Map.of("token", token));
     }
 
@@ -50,7 +50,8 @@ public class AuthController {
         try {
             var claims = jwtUtil.parseToken(token).getBody();
             String sub = claims.getSubject();
-            String newToken = jwtUtil.generateToken(sub, 1000L * 60 * 60);
+            String role = (String) claims.get("role");
+            String newToken = jwtUtil.generateToken(sub, role, 1000L * 60 * 60);
             return ResponseEntity.ok(Map.of("token", newToken));
         } catch (Exception e) {
             return ResponseEntity.status(401).body(Map.of("error","INVALID_TOKEN"));

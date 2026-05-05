@@ -1,15 +1,23 @@
 package com.petstore.controller;
 
-import com.stripe.Stripe;
-import com.stripe.model.PaymentIntent;
-import com.stripe.net.Webhook;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.stripe.Stripe;
+import com.stripe.exception.SignatureVerificationException;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.net.Webhook;
+
+import jakarta.annotation.PostConstruct;
 
 @RestController
 @RequestMapping("/api/v1/checkout")
@@ -21,11 +29,15 @@ public class StripeController {
     private String webhookSecret;
 
     @PostConstruct
-    public void init() { if (stripeSecret != null && !stripeSecret.isBlank()) Stripe.apiKey = stripeSecret; }
+    public void init() {
+        if (stripeSecret != null && !stripeSecret.isBlank()) {
+            Stripe.apiKey = stripeSecret;
+        }
+    }
 
     @PostMapping("/payment")
-    public ResponseEntity<?> createPayment(@RequestBody Map<String,Object> body) throws Exception {
-        Integer amount = (Integer) body.getOrDefault("amount", 100);
+    public ResponseEntity<?> createPayment(@RequestBody Map<String,Object> body) throws StripeException {
+        Integer amount = ((Number) body.getOrDefault("amount", 100)).intValue();
         Map<String,Object> params = new HashMap<>();
         params.put("amount", amount);
         params.put("currency", "usd");
@@ -37,10 +49,10 @@ public class StripeController {
     @PostMapping("/webhook")
     public ResponseEntity<?> handleWebhook(@RequestHeader("Stripe-Signature") String sig, @RequestBody String payload) {
         try {
-            var event = Webhook.constructEvent(payload, sig, webhookSecret);
+            Webhook.constructEvent(payload, sig, webhookSecret);
             // handle event types as needed
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
+        } catch (SignatureVerificationException e) {
             return ResponseEntity.badRequest().body("Webhook error");
         }
     }
