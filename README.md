@@ -29,8 +29,11 @@ Run backend locally (without Docker)
 
 ```powershell
 cd backend
-mvn -DskipTests package
-mvn spring-boot:run -Dspring-boot.run.profiles=local
+$env:SPRING_DATASOURCE_URL='jdbc:postgresql://127.0.0.1:5432/petstore'
+$env:SPRING_DATASOURCE_USERNAME='petstore'
+$env:SPRING_DATASOURCE_PASSWORD='dev_password'
+$env:SPRING_FLYWAY_SCHEMAS='petapp'
+mvn spring-boot:run
 ```
 
 If you want the backend to use PostgreSQL instead of the embedded local profile, start the database first with Docker Compose and run the backend with the default profile.
