@@ -164,7 +164,7 @@ export default function App() {
                     Pawsome to see you here!
                   </Typography>
                   <Typography variant="body1" className="max-w-2xl text-lg leading-8 text-slate-600">
-                    Search by name, breed, or category. Filter by availability and sort pets by price to find the right companion quicker.
+                    Welcome to J Petstore! Take a look at our amazing selection of friends and companions. Whether you're looking for a playful pup, a curious cat, or a charming critter, we've got the perfect match waiting for you. Let's find your new best friend today!
                   </Typography>
                 </div>
               </div>

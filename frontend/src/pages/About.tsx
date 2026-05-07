@@ -24,9 +24,9 @@ export default function About() {
             We believe in responsible sourcing, transparent care histories, and supporting local shelters where possible. Our practices prioritize the welfare of animals and the confidence of their future families.
           </Typography>
 
-          <div className="mt-6">
-            <Typography variant="h5" className="font-semibold mb-2">Our history</Typography>
-            <Typography variant="body2" className="text-slate-700">
+          <div className="mt-6 text-center">
+            <Typography variant="h5" className="mb-3 font-semibold">Our history</Typography>
+            <Typography variant="body2" className="mx-auto max-w-2xl text-slate-700">
               Started by a group of local animal advocates, Petstore grew from a simple idea: make it easier for families to find healthy, well-cared-for pets. Over time we've partnered with trusted caregivers and shelters to expand our selection while keeping care standards high.
             </Typography>
           </div>
