@@ -10,6 +10,9 @@ spring:
       hibernate:
         '[format_sql]': true
         '[default_schema]': ${SPRING_HIBERNATE_DEFAULT_SCHEMA:petapp}
+  flyway:
+    schemas: ${SPRING_FLYWAY_SCHEMAS:petapp}
+    baselineOnMigrate: true
 
 server:
   port: 8080

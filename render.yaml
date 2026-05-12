@@ -20,6 +20,10 @@ services:
           property: connectionString
       - key: APP_CORS_ALLOWED_ORIGINS
         value: https://petstore-frontend.onrender.com,http://localhost:3000
+        - key: SPRING_FLYWAY_SCHEMAS
+          value: petapp
+          - key: SPRING_HIBERNATE_DEFAULT_SCHEMA
+            value: petapp
 
   - type: web
     name: petstore-frontend
