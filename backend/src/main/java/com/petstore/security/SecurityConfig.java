@@ -14,24 +14,24 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-    private final String allowedOriginsCsv;
+    private final String allowedOriginPatternsCsv;
 
     public SecurityConfig(
-            @Value("${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000}") String allowedOriginsCsv
+            @Value("${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000}") String allowedOriginPatternsCsv
     ) {
-        this.allowedOriginsCsv = allowedOriginsCsv;
+        this.allowedOriginPatternsCsv = allowedOriginPatternsCsv;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        List<String> allowedOrigins = Arrays.stream(allowedOriginsCsv.split(","))
+        List<String> allowedOriginPatterns = Arrays.stream(allowedOriginPatternsCsv.split(","))
                 .map(String::trim)
                 .filter(origin -> !origin.isEmpty())
                 .toList();
 
         http.cors(cors -> cors.configurationSource(request -> {
             org.springframework.web.cors.CorsConfiguration corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
-            corsConfiguration.setAllowedOrigins(allowedOrigins);
+            corsConfiguration.setAllowedOriginPatterns(allowedOriginPatterns);
             corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
             corsConfiguration.setAllowedHeaders(List.of("*"));
             corsConfiguration.setAllowCredentials(true);

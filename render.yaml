@@ -19,11 +19,11 @@ services:
           name: petstore-db
           property: connectionString
       - key: APP_CORS_ALLOWED_ORIGINS
-        value: https://petstore-frontend.onrender.com,http://localhost:3000
-        - key: SPRING_FLYWAY_SCHEMAS
-          value: petapp
-          - key: SPRING_HIBERNATE_DEFAULT_SCHEMA
-            value: petapp
+        value: https://petstore-frontend-a9iq.onrender.com,http://localhost:3000
+      - key: SPRING_FLYWAY_SCHEMAS
+        value: petapp
+      - key: SPRING_HIBERNATE_DEFAULT_SCHEMA
+        value: petapp
 
   - type: web
     name: petstore-frontend
@@ -34,4 +34,4 @@ services:
     autoDeploy: true
     envVars:
       - key: VITE_API_URL
-        value: https://petstore-backend.onrender.com/api/v1
+        value: https://petstore-backend-9wyp.onrender.com/api/v1
