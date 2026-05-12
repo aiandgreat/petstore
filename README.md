@@ -21,9 +21,6 @@ Environment variables (for local or Render)
 - `SPRING_DATASOURCE_URL` (default: `jdbc:postgresql://db:5432/petstore`)
 - `SPRING_DATASOURCE_USERNAME` (default: `petstore`)
 - `SPRING_DATASOURCE_PASSWORD` (default: `dev_password`)
-- `JWT_SECRET` — JWT signing secret (must be >= 32 chars for HMAC)
-- `STRIPE_SECRET` — Stripe secret key for payments
-- `STRIPE_WEBHOOK_SECRET` — Stripe webhook signing secret
 
 Run backend locally (without Docker)
 
@@ -32,7 +29,6 @@ cd backend
 $env:SPRING_DATASOURCE_URL='jdbc:postgresql://127.0.0.1:5432/petstore'
 $env:SPRING_DATASOURCE_USERNAME='petstore'
 $env:SPRING_DATASOURCE_PASSWORD='dev_password'
-$env:SPRING_FLYWAY_SCHEMAS='petapp'
 mvn spring-boot:run
 ```
 
@@ -65,11 +61,11 @@ npx playwright test
 Deploying to Render
 
 - Create two services on Render:
-  1) Backend Web Service: set the Dockerfile path to `backend/Dockerfile`, set environment variables (`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `JWT_SECRET`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET`).
+  1) Backend Web Service: set the Dockerfile path to `backend/Dockerfile`, set environment variables (`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`).
   2) Frontend Static Site or Web Service: either use `frontend/Dockerfile` as a Web Service or configure a Static Site that builds with `npm install && npm run build` and serves `dist/`.
 
 - Ensure the backend's `SPRING_DATASOURCE_URL` points to a Render-managed PostgreSQL instance.
 
 Notes
 - Image uploads currently use a local `uploads/` directory (mounted in Docker Compose). For production, enable S3 in `StorageService` and provide AWS credentials; I included the AWS SDK and can add an S3-backed implementation.
-- Auth uses JWT tokens returned in responses; to harden for production, use secure HttpOnly cookies and implement refresh token rotation.
+- JWT authentication is disabled for this deployment profile. Cart and checkout use `X-User-Id` request header (defaults to `guest` if omitted).

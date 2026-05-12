@@ -1,29 +1,3 @@
 {
-  "properties": [
-    {
-      "name": "app.jwt.secret",
-      "type": "java.lang.String",
-      "description": "JWT signing secret used by the application."
-    },
-    {
-      "name": "stripe.secret",
-      "type": "java.lang.String",
-      "description": "Stripe API secret key."
-    },
-    {
-      "name": "stripe.webhookSecret",
-      "type": "java.lang.String",
-      "description": "Stripe webhook signing secret."
-    },
-    {
-      "name": "spring.flyway.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Enable Flyway database migrations."
-    },
-    {
-      "name": "spring.flyway.locations",
-      "type": "java.util.List<java.lang.String>",
-      "description": "Flyway migration locations."
-    }
-  ]
+  "properties": []
 }

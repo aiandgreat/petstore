@@ -10,13 +10,3 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
-  flyway:
-    enabled: false
-
-app:
-  jwt:
-    secret: testsecretkeytestsecretkeytestse
-
-stripe:
-  secret: test
-  webhookSecret: test

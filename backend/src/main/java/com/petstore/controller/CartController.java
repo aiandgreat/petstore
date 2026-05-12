@@ -1,14 +1,21 @@
 package com.petstore.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.petstore.model.CartItem;
 import com.petstore.model.Pet;
 import com.petstore.repository.CartItemRepository;
 import com.petstore.repository.PetRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/cart")
@@ -22,13 +29,13 @@ public class CartController {
     }
 
     @GetMapping
-    public List<CartItem> getCart(Authentication auth) {
-        return cartRepo.findByUserId(auth.getName());
+    public List<CartItem> getCart(@RequestHeader(value = "X-User-Id", required = false) String userId) {
+        return cartRepo.findByUserId(resolveUserId(userId));
     }
 
     @PostMapping
-    public ResponseEntity<?> addToCart(@RequestBody CartItem req, Authentication auth) {
-        req.setUserId(auth.getName());
+    public ResponseEntity<?> addToCart(@RequestBody CartItem req, @RequestHeader(value = "X-User-Id", required = false) String userId) {
+        req.setUserId(resolveUserId(userId));
         // validate pet exists and available
         Pet pet = petRepo.findById(req.getPetId()).orElse(null);
         if (pet == null) return ResponseEntity.badRequest().body("Pet not found");
@@ -38,11 +45,19 @@ public class CartController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeFromCart(@PathVariable Long id, Authentication auth) {
+    public ResponseEntity<?> removeFromCart(@PathVariable Long id, @RequestHeader(value = "X-User-Id", required = false) String userId) {
+        String effectiveUserId = resolveUserId(userId);
         return cartRepo.findById(id).map(ci -> {
-            if (!auth.getName().equals(ci.getUserId())) return ResponseEntity.status(403).body("Not owner");
+            if (!effectiveUserId.equals(ci.getUserId())) return ResponseEntity.status(403).body("Not owner");
             cartRepo.delete(ci);
             return ResponseEntity.ok().build();
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    private String resolveUserId(String userId) {
+        if (userId == null || userId.isBlank()) {
+            return "guest";
+        }
+        return userId;
     }
 }

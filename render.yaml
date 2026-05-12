@@ -26,24 +26,8 @@ services:
         fromDatabase:
           name: petstore-db
           property: password
-      - key: SPRING_FLYWAY_USER
-        fromDatabase:
-          name: petstore-db
-          property: user
-      - key: SPRING_FLYWAY_PASSWORD
-        fromDatabase:
-          name: petstore-db
-          property: password
-      - key: SPRING_FLYWAY_SCHEMAS
-        value: petapp
       - key: APP_CORS_ALLOWED_ORIGINS
         value: https://petstore-frontend.onrender.com,http://localhost:3000
-      - key: JWT_SECRET
-        generateValue: true
-      - key: STRIPE_SECRET
-        sync: false
-      - key: STRIPE_WEBHOOK_SECRET
-        sync: false
 
   - type: web
     name: petstore-frontend

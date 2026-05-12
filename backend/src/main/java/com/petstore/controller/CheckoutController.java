@@ -1,15 +1,21 @@
 package com.petstore.controller;
 
-import com.petstore.model.*;
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.petstore.model.CartItem;
+import com.petstore.model.OrderEntity;
+import com.petstore.model.OrderItem;
+import com.petstore.model.Pet;
 import com.petstore.repository.CartItemRepository;
 import com.petstore.repository.OrderRepository;
 import com.petstore.repository.PetRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/checkout")
@@ -26,8 +32,8 @@ public class CheckoutController {
 
     @PostMapping("/orders")
     @Transactional
-    public ResponseEntity<?> createOrder(Authentication auth) {
-        String userId = auth.getName();
+    public ResponseEntity<?> createOrder(@RequestHeader(value = "X-User-Id", required = false) String userIdHeader) {
+        String userId = (userIdHeader == null || userIdHeader.isBlank()) ? "guest" : userIdHeader;
         List<CartItem> items = cartRepo.findByUserId(userId);
         if (items.isEmpty()) return ResponseEntity.badRequest().body("Cart empty");
 

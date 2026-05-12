@@ -10,22 +10,7 @@ spring:
       hibernate:
         '[format_sql]': true
         '[default_schema]': ${SPRING_HIBERNATE_DEFAULT_SCHEMA:petapp}
-  flyway:
-    enabled: ${SPRING_FLYWAY_ENABLED:true}
-    locations: classpath:db/migration
-    schemas: ${SPRING_FLYWAY_SCHEMAS:petapp}
-    user: ${SPRING_FLYWAY_USER:petstore}
-    password: ${SPRING_FLYWAY_PASSWORD:dev_password}
-    validate-on-migrate: false
 
 server:
   port: 8080
-
-app:
-  jwt:
-    secret: ${JWT_SECRET:very-long-secret-key-that-is-at-least-32-chars-long}
-
-stripe:
-  secret: ${STRIPE_SECRET:}
-  webhookSecret: ${STRIPE_WEBHOOK_SECRET:}
 

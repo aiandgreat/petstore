@@ -3,7 +3,6 @@ com\petstore\controller\AuthController.class
 com\petstore\security\SecurityConfig.class
 com\petstore\repository\CartItemRepository.class
 com\petstore\model\OrderEntity.class
-com\petstore\controller\StripeController.class
 com\petstore\model\UserAccount.class
 com\petstore\service\StorageService.class
 com\petstore\controller\AuthController$LoginRequest.class
@@ -16,9 +15,7 @@ com\petstore\service\LocalStorageService.class
 com\petstore\controller\PetController.class
 com\petstore\PetstoreApplication.class
 com\petstore\controller\AuthController$SignupRequest.class
-com\petstore\security\JwtUtil.class
 com\petstore\repository\OrderRepository.class
 com\petstore\controller\ImageController.class
 com\petstore\repository\PetRepository.class
 com\petstore\model\OrderItem.class
-com\petstore\security\JwtAuthenticationFilter.class

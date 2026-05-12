@@ -8,17 +8,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
     defer-datasource-initialization: true
-  flyway:
-    enabled: false
   sql:
     init:
       mode: always
       data-locations: classpath:data-local.sql
-
-app:
-  jwt:
-    secret: testsecretkeytestsecretkeytestse
-
-stripe:
-  secret: test
-  webhookSecret: test
