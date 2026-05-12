@@ -7,5 +7,7 @@ RUN mvn -B -DskipTests package
 FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 COPY --from=build /workspace/target/*.jar /app/app.jar
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+ENTRYPOINT ["/app/entrypoint.sh"]

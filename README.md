@@ -61,10 +61,10 @@ npx playwright test
 Deploying to Render
 
 - Create two services on Render:
-  1) Backend Web Service: set the Dockerfile path to `backend/Dockerfile`, set environment variables (`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`).
+  1) Backend Web Service: set the Dockerfile path to `backend/Dockerfile`, and set environment variables (`DATABASE_URL`, `APP_CORS_ALLOWED_ORIGINS`). Render will provide `DATABASE_URL` from the Postgres service; the backend entrypoint converts it into Spring's JDBC settings at startup.
   2) Frontend Static Site or Web Service: either use `frontend/Dockerfile` as a Web Service or configure a Static Site that builds with `npm install && npm run build` and serves `dist/`.
 
-- Ensure the backend's `SPRING_DATASOURCE_URL` points to a Render-managed PostgreSQL instance.
+- Ensure the backend is linked to the Render-managed PostgreSQL instance via `DATABASE_URL`.
 
 Notes
 - Image uploads currently use a local `uploads/` directory (mounted in Docker Compose). For production, enable S3 in `StorageService` and provide AWS credentials; I included the AWS SDK and can add an S3-backed implementation.
